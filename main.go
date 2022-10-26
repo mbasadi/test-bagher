@@ -13,56 +13,56 @@ import (
 
 var __client_id,__client_secret string;  
 type EmailAttachments struct {
-	filename string; 
-	url string 
+	Filename string; 
+	Url string 
 }
 type SendRequestEmailOptions struct {
 
-		replyToAddresses  []string
-		ccAddresses []string
-		bccAddresses []string
-		attachments []EmailAttachments
+		ReplyToAddresses  []string
+		CcAddresses []string
+		BccAddresses []string
+		Attachments []EmailAttachments
 }
 type SendRequestOptions struct {
-	email SendRequestEmailOptions
+	Email SendRequestEmailOptions
 }
 type User struct{
-	id string
-	email string
-	number string
+	Id string
+	Email string
+	Number string
   }
   type Person struct {
 	Name string
 	Age int
 }
 type SendRequest struct {
-	notificationId  string 
-	user  User 
-	mergeTags  map[string]string
-	replace map[string]string
-	forceChannels  []string
-	templateId  string;
-	subNotificationId string;
-	options SendRequestOptions
+	NotificationId  string 
+	User  User 
+	MergeTags  map[string]string
+	Replace map[string]string
+	ForceChannels  []string
+	TemplateId  string;
+	SubNotificationId string;
+	Options SendRequestOptions
 }
 type RetractRequest struct {
-	notificationId  string 
-	userId  string 
+	NotificationId  string 
+	UserId  string 
 }
 type CreateSubNotificationRequest struct {
-	notificationId  string 
-	title  string 
-	subNotificationId  string 
+	NotificationId  string 
+	Title  string 
+	SubNotificationId  string 
 }
 type DeleteSubNotificationRequest struct {
-	notificationId  string 
-	subNotificationId  string 
+	NotificationId  string 
+	SubNotificationId  string 
 }
 type SetUserPreferencesRequest struct {
-	notificationId  string 
-	channel  string 
-	state bool 
-	subNotificationId string 
+	NotificationId  string 
+	Channel  string 
+	State bool 
+	SubNotificationId string 
 }
 func Init(client_id,client_secret string) error {
 	if client_id == "" {
@@ -133,11 +133,11 @@ func Send(params SendRequest) error{
   }
   func CreateSubNotification(params CreateSubNotificationRequest) error{
 	c := httpClient()
-	createSubNotificationRequest, err := json.Marshal(map[string]string{ "title": params.title })
+	createSubNotificationRequest, err := json.Marshal(map[string]string{ "title": params.Title })
 	if err != nil {
 		log.Fatalf("Couldn't parse response body. %+v", err)
 	}
-	return request(c, http.MethodPut,  "notifications/"+params.notificationId+"/subNotifications/"+params.subNotificationId,bytes.NewBuffer(createSubNotificationRequest))
+	return request(c, http.MethodPut,  "notifications/"+params.NotificationId+"/subNotifications/"+params.SubNotificationId,bytes.NewBuffer(createSubNotificationRequest))
   }
   
 
