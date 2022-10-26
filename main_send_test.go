@@ -15,7 +15,7 @@ import (
 
 func TestSendPassesWith202(t *testing.T) {
     Init(client_id,client_secret)
-     params:= SendRequest{NotificationId: "baz"}
+     params:= SendRequest{NotificationId: "baaz"}
   
     jsonData, _ := json.Marshal(params)
     httpmock.Activate()
