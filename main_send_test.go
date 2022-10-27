@@ -73,7 +73,7 @@ func TestSendFailsWith500(t *testing.T) {
 }
 func TestSendPasses(t *testing.T) {
     Init(client_id,client_secret)
-    params:= SendRequest{NotificationId: "baz",User:User{Id: "asd"}}
+    params:= SendRequest{NotificationId: "baz",User:&User{Id: "asd"}}
     jsonData, _ := json.Marshal(params)
     httpmock.Activate()
     defer httpmock.DeactivateAndReset()

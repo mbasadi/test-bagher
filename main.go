@@ -13,52 +13,52 @@ import (
 
 var __client_id,__client_secret string;  
 type EmailAttachments struct {
-	Filename string `json:"filename"`
-	Url string `json:"url"`
+	Filename string `json:"filename,omitempty"`
+	Url string `json:"url,omitempty"`
 }
 type SendRequestEmailOptions struct {
-		ReplyToAddresses  []string `json:"replyToAddresses"`
-		CcAddresses []string `json:"ccAddresses"`
-		BccAddresses []string `json:"bccAddresses"`
-		Attachments []EmailAttachments `json:"attachments"`
+		ReplyToAddresses  []string `json:"replyToAddresses,omitempty"`
+		CcAddresses []string `json:"ccAddresses,omitempty"`
+		BccAddresses []string `json:"bccAddresses,omitempty"`
+		Attachments []EmailAttachments `json:"attachments,omitempty"`
 }
 type SendRequestOptions struct {
-	Email SendRequestEmailOptions `json:"email"`
+	Email SendRequestEmailOptions `json:"email,omitempty"`
 }
 type User struct{
-	Id string `json:"id"`
-	Email string `json:"email"`
-	Number string `json:"number"`
+	Id string `json:"id,omitempty"`
+	Email string `json:"email,omitempty"`
+	Number string `json:"number,omitempty"`
   }
 
 type SendRequest struct {
-	NotificationId  string `json:"notificationId"`
-	User  User `json:"user"`
-	MergeTags  map[string]string `json:"mergeTags"`
-	Replace map[string]string `json:"replace"`
-	ForceChannels  []string `json:"forceChannels"`
-	TemplateId  string `json:"templateId"`
-	SubNotificationId string `json:"subNotificationId"`
-	Options SendRequestOptions `json:"options"`
+	NotificationId  string `json:"notificationId,omitempty"`
+	User  *User `json:"user,omitempty"`
+	MergeTags  map[string]string `json:"mergeTags,omitempty"`
+	Replace map[string]string `json:"replace,omitempty"`
+	ForceChannels  []string `json:"forceChannels,omitempty"`
+	TemplateId  string `json:"templateId,omitempty"`
+	SubNotificationId string `json:"subNotificationId,omitempty"`
+	Options *SendRequestOptions `json:"options,omitempty"`
 }
 type RetractRequest struct {
-	NotificationId  string `json:"notificationId"`
-	UserId  string `json:"userId"`
+	NotificationId  string `json:"notificationId,omitempty"`
+	UserId  string `json:"userId,omitempty"`
 }
 type CreateSubNotificationRequest struct {
-	NotificationId  string 
-	Title  string 
-	SubNotificationId  string 
+	NotificationId  string `json:"userId,omitempty"`
+	Title  string `json:"title,omitempty"`
+	SubNotificationId  string `json:"subNotificationId,omitempty"`
 }
 type DeleteSubNotificationRequest struct {
-	NotificationId  string 
-	SubNotificationId  string 
+	NotificationId  string `json:"notificationId,omitempty"`
+	SubNotificationId  string `json:"subNotificationId,omitempty"`
 }
 type SetUserPreferencesRequest struct {
-	NotificationId  string 
-	Channel  string 
-	State bool 
-	SubNotificationId string 
+	NotificationId  string `json:"notificationId,omitempty"`
+	Channel  string `json:"channel,omitempty"`
+	State bool `json:"state,omitempty"`
+	SubNotificationId string `json:"subNotificationId,omitempty"`
 }
 func Init(client_id,client_secret string) error {
 	if client_id == "" {
@@ -88,7 +88,6 @@ func request(client *http.Client, method,uri string, data *bytes.Buffer) error{
 	}
 	req.Header.Add("Authorization","Basic " + basicAuth(__client_id,__client_secret))
 	response, err := client.Do(req)
-
 	if err != nil {
 		log.Fatalf("Error sending request to API endpoint. %+v", err)
 	}
