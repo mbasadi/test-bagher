@@ -15,7 +15,7 @@ import (
 
 func TestSendPassesWith202(t *testing.T) {
     Init(client_id,client_secret)
-     params:= SendRequest{notificationId: "baaz"}
+     params:= SendRequest{NotificationId: "baaz"}
   
     jsonData, _ := json.Marshal(params)
     httpmock.Activate()
@@ -48,7 +48,7 @@ func TestSendPassesWith202(t *testing.T) {
 }
 func TestSendFailsWith500(t *testing.T) {
     Init(client_id,client_secret)
-    params:= SendRequest{notificationId: "baz"}
+    params:= SendRequest{NotificationId: "baz"}
     jsonData, _ := json.Marshal(params)
     httpmock.Activate()
     defer httpmock.DeactivateAndReset()
@@ -73,7 +73,7 @@ func TestSendFailsWith500(t *testing.T) {
 }
 func TestSendPasses(t *testing.T) {
     Init(client_id,client_secret)
-    params:= SendRequest{notificationId: "baz",user:user{id: "asd"}}
+    params:= SendRequest{NotificationId: "baz",User:User{Id: "asd"}}
     jsonData, _ := json.Marshal(params)
     httpmock.Activate()
     defer httpmock.DeactivateAndReset()

@@ -13,56 +13,52 @@ import (
 
 var __client_id,__client_secret string;  
 type EmailAttachments struct {
-	Filename string; 
-	Url string 
+	Filename string `json:"filename"`
+	Url string `json:"url"`
 }
-type sendRequestEmailOptions struct {
-
-		replyToAddresses  []string
-		ccAddresses []string
-		bccAddresses []string
-		attachments []EmailAttachments
+type SendRequestEmailOptions struct {
+		ReplyToAddresses  []string `json:"replyToAddresses"`
+		CcAddresses []string `json:"ccAddresses"`
+		BccAddresses []string `json:"bccAddresses"`
+		Attachments []EmailAttachments `json:"attachments"`
 }
-type sendRequestOptions struct {
-	email sendRequestEmailOptions
+type SendRequestOptions struct {
+	Email SendRequestEmailOptions `json:"email"`
 }
-type user struct{
-	id string
-	email string
-	number string
+type User struct{
+	Id string `json:"id"`
+	Email string `json:"email"`
+	Number string `json:"number"`
   }
-  type Person struct {
-	name string
-	age int
-}
+
 type SendRequest struct {
-	notificationId  string 
-	user  user 
-	mergeTags  map[string]string
-	replace map[string]string
-	forceChannels  []string
-	templateId  string;
-	subNotificationId string;
-	options sendRequestOptions
+	NotificationId  string `json:"notificationId"`
+	User  User `json:"user"`
+	MergeTags  map[string]string `json:"mergeTags"`
+	Replace map[string]string `json:"replace"`
+	ForceChannels  []string `json:"forceChannels"`
+	TemplateId  string `json:"templateId"`
+	SubNotificationId string `json:"subNotificationId"`
+	Options SendRequestOptions `json:"options"`
 }
 type RetractRequest struct {
-	notificationId  string 
-	userId  string 
+	NotificationId  string `json:"notificationId"`
+	UserId  string `json:"userId"`
 }
 type CreateSubNotificationRequest struct {
-	notificationId  string 
-	title  string 
-	subNotificationId  string 
+	NotificationId  string 
+	Title  string 
+	SubNotificationId  string 
 }
 type DeleteSubNotificationRequest struct {
-	notificationId  string 
-	subNotificationId  string 
+	NotificationId  string 
+	SubNotificationId  string 
 }
 type SetUserPreferencesRequest struct {
-	notificationId  string 
-	channel  string 
-	state bool 
-	subNotificationId string 
+	NotificationId  string 
+	Channel  string 
+	State bool 
+	SubNotificationId string 
 }
 func Init(client_id,client_secret string) error {
 	if client_id == "" {
@@ -133,11 +129,11 @@ func Send(params SendRequest) error{
   }
   func CreateSubNotification(params CreateSubNotificationRequest) error{
 	c := httpClient()
-	createSubNotificationRequest, err := json.Marshal(map[string]string{ "title": params.title })
+	createSubNotificationRequest, err := json.Marshal(map[string]string{ "title": params.Title })
 	if err != nil {
 		log.Fatalf("Couldn't parse response body. %+v", err)
 	}
-	return request(c, http.MethodPut,  "notifications/"+params.notificationId+"/subNotifications/"+params.subNotificationId,bytes.NewBuffer(createSubNotificationRequest))
+	return request(c, http.MethodPut,  "notifications/"+params.NotificationId+"/subNotifications/"+params.SubNotificationId,bytes.NewBuffer(createSubNotificationRequest))
   }
   
 
