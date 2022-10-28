@@ -33,7 +33,7 @@ type User struct{
 
 type SendRequest struct {
 	NotificationId  string `json:"notificationId,omitempty"`
-	User  *User `json:"user,omitempty"`
+	User  User `json:"user,omitempty"`
 	MergeTags  map[string]string `json:"mergeTags,omitempty"`
 	Replace map[string]string `json:"replace,omitempty"`
 	ForceChannels  []string `json:"forceChannels,omitempty"`
@@ -135,5 +135,15 @@ func Send(params SendRequest) error{
 	return request(c, http.MethodPut,  "notifications/"+params.NotificationId+"/subNotifications/"+params.SubNotificationId,bytes.NewBuffer(createSubNotificationRequest))
   }
   
-
-
+  func DeleteSubNotification(params DeleteSubNotificationRequest) error{
+	c := httpClient()
+	return  request(c, http.MethodDelete,  "notifications/"+params.NotificationId+"/subNotifications/"+params.SubNotificationId,bytes.NewBuffer(nil))
+  }
+  func SetUserPreferences(   userId string, params []SetUserPreferencesRequest) error{
+	c := httpClient()
+	setUserPreferencesRequest, err := json.Marshal(params)
+	if err != nil {
+		log.Fatalf("Couldn't parse response body. %+v", err)
+	}
+	return request(c, http.MethodPost,  "user_preferences/"+userId,bytes.NewBuffer(setUserPreferencesRequest))
+  }
