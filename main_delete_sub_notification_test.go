@@ -1,7 +1,6 @@
 package notification
 
 import (
-	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -13,21 +12,15 @@ import (
 
 
 
-func TestSendPassesWith202(t *testing.T) {
+func TestDeleteSubNotificationPassesWith202(t *testing.T) {
+
     Init(client_id,client_secret)
-     params:= SendRequest{NotificationId: "baaz"}
-  
-    jsonData, _ := json.Marshal(params)
+    params := DeleteSubNotificationRequest{NotificationId: "baaz",SubNotificationId:"123"}
     httpmock.Activate()
     defer httpmock.DeactivateAndReset()
 
-    httpmock.RegisterResponder("POST", "https://api.notificationapi.com/client_id/sender",
-        func(req *http.Request) (*http.Response, error) {
-            b, err := ioutil.ReadAll(req.Body)
-            if err != nil {
-                panic(err)
-            }
-            assert.Equal(t, b, jsonData)      
+    httpmock.RegisterResponder("DELETE", "https://api.notificationapi.com/client_id/notifications/"+params.NotificationId+"/subNotifications/"+params.SubNotificationId,
+        func(req *http.Request) (*http.Response, error) {   
             resp, err := httpmock.NewJsonResponse(202, map[string]interface{}{
                 "value": "fixed",
             })
@@ -38,7 +31,7 @@ func TestSendPassesWith202(t *testing.T) {
     rescueStdout := os.Stdout
     r, w, _ := os.Pipe()
     os.Stdout = w
-    Send(params)
+    DeleteSubNotification(params)
     w.Close()
     out, _ := ioutil.ReadAll(r)
     os.Stdout = rescueStdout
@@ -46,45 +39,35 @@ func TestSendPassesWith202(t *testing.T) {
     assert.Equal(t, httpmock.GetTotalCallCount(), 1, "Error should be: %v, got: %v", 1, httpmock.GetTotalCallCount())
     httpmock.Deactivate()
 }
-func TestSendFailsWith500(t *testing.T) {
+func TestDeleteSubNotificationFailsWith500(t *testing.T) {
     Init(client_id,client_secret)
-    params:= SendRequest{NotificationId: "baz"}
-    jsonData, _ := json.Marshal(params)
+    params := DeleteSubNotificationRequest{NotificationId: "baaz",SubNotificationId:"123"}
     httpmock.Activate()
     defer httpmock.DeactivateAndReset()
 
-    httpmock.RegisterResponder("POST", "https://api.notificationapi.com/client_id/sender",
-        func(req *http.Request) (*http.Response, error) {
-            b, err := ioutil.ReadAll(req.Body)
-            if err != nil {
-                panic(err)
-            }
-            assert.Equal(t, b, jsonData)      
+    httpmock.RegisterResponder("DELETE", "https://api.notificationapi.com/client_id/notifications/"+params.NotificationId+"/subNotifications/"+params.SubNotificationId,
+        func(req *http.Request) (*http.Response, error) {  
             resp, err := httpmock.NewJsonResponse(500, map[string]interface{}{
                 "value": "fixed",
             })
             return resp, err
         },
     )
-    res:=Send(params)
+    res:=    DeleteSubNotification(params)
     assert.EqualErrorf(t,    res , "NotificationAPI request failed.", "The log message should be %s, got: %v", "NotificationAPI request failed.",res)
     assert.Equal(t, httpmock.GetTotalCallCount(), 1, "Error should be: %v, got: %v", 1, httpmock.GetTotalCallCount())
     httpmock.Deactivate()
 }
-func TestSendPasses(t *testing.T) {
+func TestDeleteSubNotificationPasses(t *testing.T) {
+
     Init(client_id,client_secret)
-    params:= SendRequest{NotificationId: "baz",User:User{Id: "asd"}}
-    jsonData, _ := json.Marshal(params)
+    params := DeleteSubNotificationRequest{NotificationId: "baaz",SubNotificationId:"123"}
     httpmock.Activate()
     defer httpmock.DeactivateAndReset()
 
-    httpmock.RegisterResponder("POST", "https://api.notificationapi.com/client_id/sender",
+    httpmock.RegisterResponder("DELETE", "https://api.notificationapi.com/client_id/notifications/"+params.NotificationId+"/subNotifications/"+params.SubNotificationId,
         func(req *http.Request) (*http.Response, error) {
-            b, err := ioutil.ReadAll(req.Body)
-            if err != nil {
-                panic(err)
-            }
-            assert.Equal(t, b, jsonData)      
+
             resp, err := httpmock.NewJsonResponse(200, map[string]interface{}{
                 "value": "fixed",
             })
@@ -95,7 +78,7 @@ func TestSendPasses(t *testing.T) {
     rescueStdout := os.Stdout
     r, w, _ := os.Pipe()
     os.Stdout = w
-    Send(params)
+    DeleteSubNotification(params)
     w.Close()
     out, _ := ioutil.ReadAll(r)
     os.Stdout = rescueStdout

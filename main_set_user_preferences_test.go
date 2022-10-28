@@ -13,15 +13,15 @@ import (
 
 
 
-func TestSendPassesWith202(t *testing.T) {
+func TestSetUserPreferencesPassesWith202(t *testing.T) {
     Init(client_id,client_secret)
-     params:= SendRequest{NotificationId: "baaz"}
-  
+    params := []SetUserPreferencesRequest{{NotificationId: "baaz",Channel:"EMAIL",State:true,SubNotificationId:"123"}}
+    userId:= "123"
     jsonData, _ := json.Marshal(params)
     httpmock.Activate()
     defer httpmock.DeactivateAndReset()
 
-    httpmock.RegisterResponder("POST", "https://api.notificationapi.com/client_id/sender",
+    httpmock.RegisterResponder("POST", "https://api.notificationapi.com/client_id/user_preferences/"+userId,
         func(req *http.Request) (*http.Response, error) {
             b, err := ioutil.ReadAll(req.Body)
             if err != nil {
@@ -38,7 +38,7 @@ func TestSendPassesWith202(t *testing.T) {
     rescueStdout := os.Stdout
     r, w, _ := os.Pipe()
     os.Stdout = w
-    Send(params)
+    SetUserPreferences(userId,params)
     w.Close()
     out, _ := ioutil.ReadAll(r)
     os.Stdout = rescueStdout
@@ -46,14 +46,15 @@ func TestSendPassesWith202(t *testing.T) {
     assert.Equal(t, httpmock.GetTotalCallCount(), 1, "Error should be: %v, got: %v", 1, httpmock.GetTotalCallCount())
     httpmock.Deactivate()
 }
-func TestSendFailsWith500(t *testing.T) {
+func TestSetUserPreferencesFailsWith500(t *testing.T) {
     Init(client_id,client_secret)
-    params:= SendRequest{NotificationId: "baz"}
+    params := []SetUserPreferencesRequest{{NotificationId: "baaz",Channel:"EMAIL",State:true,SubNotificationId:"123"}}
+    userId:="13"
     jsonData, _ := json.Marshal(params)
     httpmock.Activate()
     defer httpmock.DeactivateAndReset()
 
-    httpmock.RegisterResponder("POST", "https://api.notificationapi.com/client_id/sender",
+    httpmock.RegisterResponder("POST", "https://api.notificationapi.com/client_id/user_preferences/"+userId,
         func(req *http.Request) (*http.Response, error) {
             b, err := ioutil.ReadAll(req.Body)
             if err != nil {
@@ -66,19 +67,20 @@ func TestSendFailsWith500(t *testing.T) {
             return resp, err
         },
     )
-    res:=Send(params)
+    res:=    SetUserPreferences(userId,params)
     assert.EqualErrorf(t,    res , "NotificationAPI request failed.", "The log message should be %s, got: %v", "NotificationAPI request failed.",res)
     assert.Equal(t, httpmock.GetTotalCallCount(), 1, "Error should be: %v, got: %v", 1, httpmock.GetTotalCallCount())
     httpmock.Deactivate()
 }
-func TestSendPasses(t *testing.T) {
+func TestSetUserPreferencesPasses(t *testing.T) {
     Init(client_id,client_secret)
-    params:= SendRequest{NotificationId: "baz",User:User{Id: "asd"}}
+    params := []SetUserPreferencesRequest{{NotificationId: "baaz",Channel:"EMAIL",State:true,SubNotificationId:"123"}}
+    userId:="13"
     jsonData, _ := json.Marshal(params)
     httpmock.Activate()
     defer httpmock.DeactivateAndReset()
 
-    httpmock.RegisterResponder("POST", "https://api.notificationapi.com/client_id/sender",
+    httpmock.RegisterResponder("POST", "https://api.notificationapi.com/client_id/user_preferences/"+userId,
         func(req *http.Request) (*http.Response, error) {
             b, err := ioutil.ReadAll(req.Body)
             if err != nil {
@@ -95,7 +97,7 @@ func TestSendPasses(t *testing.T) {
     rescueStdout := os.Stdout
     r, w, _ := os.Pipe()
     os.Stdout = w
-    Send(params)
+    SetUserPreferences(userId,params)
     w.Close()
     out, _ := ioutil.ReadAll(r)
     os.Stdout = rescueStdout
