@@ -1,4 +1,4 @@
-package notification
+package NotificationAPI
 
 import (
 	"io/ioutil"
